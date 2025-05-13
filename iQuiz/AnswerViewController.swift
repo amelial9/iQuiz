@@ -18,14 +18,41 @@ class AnswerViewController: UIViewController {
         view.backgroundColor = .systemBackground
         setupLayout()
         setupSwipeGestures()
+        setupBackOverride()
+    }
+
+    func setupBackOverride() {
+        navigationItem.hidesBackButton = true
+        let customBack = UIBarButtonItem(title: "Back", style: .plain, target: self, action: #selector(backToRoot))
+        navigationItem.leftBarButtonItem = customBack
+    }
+
+    @objc func backToRoot() {
+        navigationController?.popToRootViewController(animated: true)
     }
 
     func setupLayout() {
+        guard let question = quizManager.currentQuestion else { return }
+
         let resultLabel = UILabel()
         resultLabel.text = wasCorrect ? "✅ Correct!" : "❌ Incorrect"
         resultLabel.font = .systemFont(ofSize: 28, weight: .bold)
         resultLabel.textAlignment = .center
         resultLabel.translatesAutoresizingMaskIntoConstraints = false
+
+        let questionLabel = UILabel()
+        questionLabel.text = "Q: \(question.text)"
+        questionLabel.font = .systemFont(ofSize: 18, weight: .regular)
+        questionLabel.numberOfLines = 0
+        questionLabel.textAlignment = .center
+        questionLabel.translatesAutoresizingMaskIntoConstraints = false
+
+        let answerLabel = UILabel()
+        answerLabel.text = "Answer: \(question.options[question.correctIndex])"
+        answerLabel.font = .systemFont(ofSize: 18, weight: .semibold)
+        answerLabel.textColor = .systemGreen
+        answerLabel.textAlignment = .center
+        answerLabel.translatesAutoresizingMaskIntoConstraints = false
 
         let nextButton = UIButton(type: .system)
         nextButton.setTitle("Next", for: .normal)
@@ -41,14 +68,23 @@ class AnswerViewController: UIViewController {
         hintLabel.translatesAutoresizingMaskIntoConstraints = false
 
         view.addSubview(resultLabel)
+        view.addSubview(questionLabel)
+        view.addSubview(answerLabel)
         view.addSubview(nextButton)
         view.addSubview(hintLabel)
 
         NSLayoutConstraint.activate([
             resultLabel.centerXAnchor.constraint(equalTo: view.centerXAnchor),
-            resultLabel.centerYAnchor.constraint(equalTo: view.centerYAnchor, constant: -20),
+            resultLabel.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 80),
 
-            nextButton.topAnchor.constraint(equalTo: resultLabel.bottomAnchor, constant: 30),
+            questionLabel.topAnchor.constraint(equalTo: resultLabel.bottomAnchor, constant: 20),
+            questionLabel.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 20),
+            questionLabel.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -20),
+
+            answerLabel.topAnchor.constraint(equalTo: questionLabel.bottomAnchor, constant: 10),
+            answerLabel.centerXAnchor.constraint(equalTo: view.centerXAnchor),
+
+            nextButton.topAnchor.constraint(equalTo: answerLabel.bottomAnchor, constant: 30),
             nextButton.centerXAnchor.constraint(equalTo: view.centerXAnchor),
 
             hintLabel.topAnchor.constraint(equalTo: nextButton.bottomAnchor, constant: 20),

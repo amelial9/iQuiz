@@ -33,7 +33,7 @@ class FinishedViewController: UIViewController {
         feedbackLabel.translatesAutoresizingMaskIntoConstraints = false
 
         let backButton = UIButton(type: .system)
-        backButton.setTitle("Back to Topics", for: .normal)
+        backButton.setTitle("Next", for: .normal)
         backButton.titleLabel?.font = .systemFont(ofSize: 20, weight: .semibold)
         backButton.addTarget(self, action: #selector(backToTopics), for: .touchUpInside)
         backButton.translatesAutoresizingMaskIntoConstraints = false

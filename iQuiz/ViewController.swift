@@ -64,6 +64,11 @@ class ViewController: UITableViewController {
         let questionVC = QuestionViewController()
         questionVC.quizManager = manager
 
+        let backItem = UIBarButtonItem()
+        backItem.title = "Back"
+        navigationItem.backBarButtonItem = backItem
+
         navigationController?.pushViewController(questionVC, animated: true)
     }
+
 }
