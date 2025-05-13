@@ -8,6 +8,7 @@
 import Foundation
 
 struct QuizTopic {
+    let id: String
     let title: String
     let description: String
     let imageName: String
