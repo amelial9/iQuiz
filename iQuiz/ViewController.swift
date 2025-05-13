@@ -16,17 +16,19 @@ class ViewController: UITableViewController {
     ]
 
     let questions: [QuizQuestion] = [
-        QuizQuestion(topicID: "math", text: "2 + 2 = ?", options: ["3", "4", "5"], correctIndex: 1),
-        QuizQuestion(topicID: "math", text: "What is the square root of 9?", options: ["1", "2", "3"], correctIndex: 2),
-        QuizQuestion(topicID: "math", text: "5 × 6 = ?", options: ["30", "25", "20"], correctIndex: 0),
+        QuizQuestion(topicID: "math", text: "10 - 4 = ?", options: ["5", "6", "7"], correctIndex: 1),
+        QuizQuestion(topicID: "math", text: "What is 3 × 3?", options: ["6", "9", "12"], correctIndex: 1),
+        QuizQuestion(topicID: "math", text: "Which is an even number?", options: ["3", "5", "8"], correctIndex: 2),
 
         QuizQuestion(topicID: "marvel", text: "Who is Iron Man?", options: ["Tony Stark", "Bruce Banner", "Steve Rogers"], correctIndex: 0),
-        QuizQuestion(topicID: "marvel", text: "Captain America's shield is made of?", options: ["Adamantium", "Vibranium", "Titanium"], correctIndex: 1),
-        QuizQuestion(topicID: "marvel", text: "Thor is from which realm?", options: ["Asgard", "Midgard", "Jotunheim"], correctIndex: 0),
+        QuizQuestion(topicID: "marvel", text: "Loki is the God of what?", options: ["Fire", "Mischief", "Power"], correctIndex: 1),
+        QuizQuestion(topicID: "marvel", text: "What does the TVA do in the Loki series?", options: ["Protect Asgard", "Fix timelines", "Train Avengers"], correctIndex: 1),
+        QuizQuestion(topicID: "marvel", text: "What is Captain America's shield made of?", options: ["Vibranium", "Titanium", "Adamantium"], correctIndex: 0),
 
-        QuizQuestion(topicID: "science", text: "H2O is the chemical formula for?", options: ["Oxygen", "Hydrogen", "Water"], correctIndex: 2),
-        QuizQuestion(topicID: "science", text: "What planet is closest to the sun?", options: ["Mercury", "Venus", "Earth"], correctIndex: 0),
-        QuizQuestion(topicID: "science", text: "Speed of light is?", options: ["3x10⁸ m/s", "1x10⁶ m/s", "9.8 m/s²"], correctIndex: 0)
+        QuizQuestion(topicID: "science", text: "The Earth revolves around the...?", options: ["Moon", "Sun", "Mars"], correctIndex: 1),
+        QuizQuestion(topicID: "science", text: "Humans breathe in...?", options: ["Carbon dioxide", "Nitrogen", "Oxygen"], correctIndex: 2),
+        QuizQuestion(topicID: "science", text: "Water boils at ___ °C?", options: ["50", "100", "200"], correctIndex: 1),
+
     ]
 
     override func viewDidLoad() {

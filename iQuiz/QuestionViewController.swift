@@ -21,6 +21,7 @@ class QuestionViewController: UIViewController {
         view.backgroundColor = .systemBackground
         setupLayout()
         showQuestion()
+        setupSwipeGestures()
     }
 
     func setupLayout() {
@@ -37,13 +38,24 @@ class QuestionViewController: UIViewController {
         submitButton.translatesAutoresizingMaskIntoConstraints = false
         view.addSubview(submitButton)
 
+        let hintLabel = UILabel()
+        hintLabel.text = "← swipe to quit      swipe to submit →"
+        hintLabel.font = .systemFont(ofSize: 14)
+        hintLabel.textColor = .secondaryLabel
+        hintLabel.textAlignment = .center
+        hintLabel.translatesAutoresizingMaskIntoConstraints = false
+        view.addSubview(hintLabel)
+
         NSLayoutConstraint.activate([
-            questionLabel.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 40),
+            questionLabel.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 60),
             questionLabel.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 20),
             questionLabel.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -20),
 
             submitButton.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: -30),
-            submitButton.centerXAnchor.constraint(equalTo: view.centerXAnchor)
+            submitButton.centerXAnchor.constraint(equalTo: view.centerXAnchor),
+
+            hintLabel.bottomAnchor.constraint(equalTo: submitButton.topAnchor, constant: -12),
+            hintLabel.centerXAnchor.constraint(equalTo: view.centerXAnchor)
         ])
     }
 
@@ -62,7 +74,7 @@ class QuestionViewController: UIViewController {
             let btn = UIButton(type: .system)
             btn.setTitle(option, for: .normal)
             btn.tag = i
-            btn.contentHorizontalAlignment = .center  // ✅ Center text
+            btn.contentHorizontalAlignment = .center
             btn.contentEdgeInsets = UIEdgeInsets(top: 10, left: 16, bottom: 10, right: 16)
             btn.titleLabel?.font = .systemFont(ofSize: 18)
             btn.backgroundColor = .systemGray6
@@ -101,5 +113,34 @@ class QuestionViewController: UIViewController {
         answerVC.quizManager = quizManager
         answerVC.wasCorrect = isCorrect
         navigationController?.pushViewController(answerVC, animated: true)
+    }
+
+    func setupSwipeGestures() {
+        let swipeRight = UISwipeGestureRecognizer(target: self, action: #selector(handleSwipeRight))
+        swipeRight.direction = .right
+        view.addGestureRecognizer(swipeRight)
+
+        let swipeLeft = UISwipeGestureRecognizer(target: self, action: #selector(handleSwipeLeft))
+        swipeLeft.direction = .left
+        view.addGestureRecognizer(swipeLeft)
+    }
+
+    @objc func handleSwipeRight() {
+        if submitButton.isEnabled {
+            submitTapped()
+        } else {
+            let alert = UIAlertController(title: "Select an Answer", message: "Choose an option before submitting.", preferredStyle: .alert)
+            alert.addAction(UIAlertAction(title: "OK", style: .default))
+            present(alert, animated: true)
+        }
+    }
+
+    @objc func handleSwipeLeft() {
+        let alert = UIAlertController(title: "Quit Quiz?", message: "Are you sure you want to abandon this quiz?", preferredStyle: .alert)
+        alert.addAction(UIAlertAction(title: "Yes", style: .destructive) { _ in
+            self.navigationController?.popToRootViewController(animated: true)
+        })
+        alert.addAction(UIAlertAction(title: "Cancel", style: .cancel))
+        present(alert, animated: true)
     }
 }
