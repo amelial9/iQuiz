@@ -22,7 +22,7 @@ class QuestionViewController: UIViewController {
        setupLayout()
        showQuestion()
        setupSwipeGestures()
-       setupBackOverride() // 👈 custom back to root
+       setupBackOverride()
    }
 
    func setupBackOverride() {
