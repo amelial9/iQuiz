@@ -109,7 +109,13 @@ class SettingsViewController: UIViewController {
                     self.dismiss(animated: true)
 
                 case .failure(let error):
-                    self.statusLabel.text = "Failed to fetch: \(error.localizedDescription)"
+                    let alert = UIAlertController(
+                        title: "Network Error",
+                        message: "Could not load quiz data.\nReason: \(error.localizedDescription)",
+                        preferredStyle: .alert
+                    )
+                    alert.addAction(UIAlertAction(title: "OK", style: .default))
+                    self.present(alert, animated: true)
                 }
             }
         }
