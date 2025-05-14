@@ -93,9 +93,14 @@ class ViewController: UITableViewController {
                             guard let text = qDict["text"] as? String,
                                   let answerStr = qDict["answer"] as? String,
                                   let answers = qDict["answers"] as? [String],
-                                  let correctIndex = Int(answerStr),
-                                  correctIndex >= 0,
-                                  correctIndex < answers.count else {
+                                  let index = Int(answerStr),
+                                  index > 0 else {
+                                continue
+                            }
+
+                            let correctIndex = index - 1
+
+                            guard correctIndex < answers.count else {
                                 continue
                             }
 
