@@ -11,7 +11,7 @@ class ViewController: UITableViewController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
-
+        
         tableView.register(UITableViewCell.self, forCellReuseIdentifier: "QuizCell")
         navigationItem.title = "Quiz Topics"
         navigationItem.rightBarButtonItem = UIBarButtonItem(title: "Settings", style: .plain, target: self, action: #selector(showSettings))
@@ -19,6 +19,13 @@ class ViewController: UITableViewController {
         tableView.refreshControl = UIRefreshControl()
         tableView.refreshControl?.addTarget(self, action: #selector(refreshData), for: .valueChanged)
 
+        NotificationCenter.default.addObserver(self, selector: #selector(reloadData), name: Notification.Name("DidUpdateData"), object: nil)
+
+        refreshData()
+    }
+
+    @objc func reloadData() {
+        tableView.reloadData()
     }
 
     @objc func showSettings() {
@@ -26,7 +33,7 @@ class ViewController: UITableViewController {
         settingsVC.modalPresentationStyle = .formSheet
         present(settingsVC, animated: true)
     }
-    
+
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return QuizDataStore.topics.count
     }
@@ -60,7 +67,7 @@ class ViewController: UITableViewController {
 
         navigationController?.pushViewController(questionVC, animated: true)
     }
-    
+
     @objc func refreshData() {
         let url = UserDefaults.standard.string(forKey: "dataURL") ?? "https://tednewardsandbox.site44.com/questions.json"
         NetworkManager.shared.fetchQuestions(from: url) { result in
@@ -96,11 +103,9 @@ class ViewController: UITableViewController {
                             newQuestions.append(question)
                         }
                     }
-                    
+
                     QuizDataStore.topics = newTopics
                     QuizDataStore.questions = newQuestions
-                    self.tableView.reloadData()
-                    
                     self.tableView.reloadData()
 
                 case .failure(let error):
@@ -111,10 +116,9 @@ class ViewController: UITableViewController {
             }
         }
     }
-    
+
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         tableView.reloadData()
     }
-
 }

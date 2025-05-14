@@ -67,7 +67,6 @@ class SettingsViewController: UIViewController {
                 switch result {
                 case .success(let data):
                     self.statusLabel.text = "Fetched \(data.count) topic(s)."
-                    print("✅ Downloaded data: \(data.count) topic blocks")
 
                     var newTopics: [QuizTopic] = []
                     var newQuestions: [QuizQuestion] = []
@@ -87,9 +86,14 @@ class SettingsViewController: UIViewController {
                             guard let text = qDict["text"] as? String,
                                   let answerStr = qDict["answer"] as? String,
                                   let answers = qDict["answers"] as? [String],
-                                  let correctIndex = Int(answerStr),
-                                  correctIndex >= 0,
-                                  correctIndex < answers.count else {
+                                  let index = Int(answerStr),
+                                  index > 0 else {
+                                continue
+                            }
+
+                            let correctIndex = index - 1
+
+                            guard correctIndex < answers.count else {
                                 continue
                             }
 
@@ -98,17 +102,14 @@ class SettingsViewController: UIViewController {
                         }
                     }
 
-                    print("🧠 Parsed topics: \(newTopics.count)")
-                    print("📘 Parsed questions: \(newQuestions.count)")
-
                     QuizDataStore.topics = newTopics
                     QuizDataStore.questions = newQuestions
+                    NotificationCenter.default.post(name: Notification.Name("DidUpdateData"), object: nil)
 
                     self.dismiss(animated: true)
 
                 case .failure(let error):
                     self.statusLabel.text = "Failed to fetch: \(error.localizedDescription)"
-                    print("❌ Fetch failed: \(error)")
                 }
             }
         }
