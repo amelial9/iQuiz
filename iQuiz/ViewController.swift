@@ -13,7 +13,7 @@ class ViewController: UITableViewController {
         super.viewDidLoad()
         
         tableView.register(UITableViewCell.self, forCellReuseIdentifier: "QuizCell")
-        navigationItem.title = "Quiz Topics"
+        navigationItem.title = "iQuiz"
         navigationItem.rightBarButtonItem = UIBarButtonItem(title: "Settings", style: .plain, target: self, action: #selector(showSettings))
 
         tableView.refreshControl = UIRefreshControl()
