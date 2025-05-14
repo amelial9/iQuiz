@@ -42,3 +42,8 @@ class QuizManager {
         score = 0
     }
 }
+
+class QuizDataStore {
+    static var topics: [QuizTopic] = []
+    static var questions: [QuizQuestion] = []
+}

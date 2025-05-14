@@ -9,49 +9,30 @@ import UIKit
 
 class ViewController: UITableViewController {
 
-    let topics: [QuizTopic] = [
-        QuizTopic(id: "math", title: "Mathematics", description: "Test your math skills.", imageName: "function"),
-        QuizTopic(id: "marvel", title: "Marvel Super Heroes", description: "How well do you know the Marvel heroes?", imageName: "person.3.fill"),
-        QuizTopic(id: "science", title: "Science", description: "Explore science!", imageName: "atom")
-    ]
-
-    let questions: [QuizQuestion] = [
-        QuizQuestion(topicID: "math", text: "10 - 4 = ?", options: ["5", "6", "7"], correctIndex: 1),
-        QuizQuestion(topicID: "math", text: "What is 3 × 3?", options: ["6", "9", "12"], correctIndex: 1),
-        QuizQuestion(topicID: "math", text: "Which is an even number?", options: ["3", "5", "8"], correctIndex: 2),
-
-        QuizQuestion(topicID: "marvel", text: "Who is Iron Man?", options: ["Tony Stark", "Bruce Banner", "Steve Rogers"], correctIndex: 0),
-        QuizQuestion(topicID: "marvel", text: "Loki is the God of what?", options: ["Fire", "Mischief", "Power"], correctIndex: 1),
-        QuizQuestion(topicID: "marvel", text: "What does the TVA do in the Loki series?", options: ["Protect Asgard", "Fix timelines", "Train Avengers"], correctIndex: 1),
-        QuizQuestion(topicID: "marvel", text: "What is Captain America's shield made of?", options: ["Vibranium", "Titanium", "Adamantium"], correctIndex: 0),
-
-        QuizQuestion(topicID: "science", text: "The Earth revolves around the...?", options: ["Moon", "Sun", "Mars"], correctIndex: 1),
-        QuizQuestion(topicID: "science", text: "Humans breathe in...?", options: ["Carbon dioxide", "Nitrogen", "Oxygen"], correctIndex: 2),
-        QuizQuestion(topicID: "science", text: "Water boils at ___ °C?", options: ["50", "100", "200"], correctIndex: 1),
-
-    ]
-
     override func viewDidLoad() {
         super.viewDidLoad()
-        
+
         tableView.register(UITableViewCell.self, forCellReuseIdentifier: "QuizCell")
         navigationItem.title = "Quiz Topics"
-
         navigationItem.rightBarButtonItem = UIBarButtonItem(title: "Settings", style: .plain, target: self, action: #selector(showSettings))
+
+        tableView.refreshControl = UIRefreshControl()
+        tableView.refreshControl?.addTarget(self, action: #selector(refreshData), for: .valueChanged)
+
     }
 
     @objc func showSettings() {
-        let alert = UIAlertController(title: "Settings", message: "Settings go here", preferredStyle: .alert)
-        alert.addAction(UIAlertAction(title: "OK", style: .default))
-        present(alert, animated: true)
+        let settingsVC = SettingsViewController()
+        settingsVC.modalPresentationStyle = .formSheet
+        present(settingsVC, animated: true)
     }
-
+    
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return topics.count
+        return QuizDataStore.topics.count
     }
 
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let topic = topics[indexPath.row]
+        let topic = QuizDataStore.topics[indexPath.row]
         let cell = UITableViewCell(style: .subtitle, reuseIdentifier: "QuizCell")
         cell.textLabel?.text = topic.title
         cell.detailTextLabel?.text = topic.description
@@ -66,8 +47,8 @@ class ViewController: UITableViewController {
     }
 
     override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        let selectedTopic = topics[indexPath.row]
-        let filteredQuestions = questions.filter { $0.topicID == selectedTopic.id }
+        let selectedTopic = QuizDataStore.topics[indexPath.row]
+        let filteredQuestions = QuizDataStore.questions.filter { $0.topicID == selectedTopic.id }
 
         let manager = QuizManager(topic: selectedTopic, questions: filteredQuestions)
         let questionVC = QuestionViewController()
@@ -78,6 +59,62 @@ class ViewController: UITableViewController {
         navigationItem.backBarButtonItem = backItem
 
         navigationController?.pushViewController(questionVC, animated: true)
+    }
+    
+    @objc func refreshData() {
+        let url = UserDefaults.standard.string(forKey: "dataURL") ?? "https://tednewardsandbox.site44.com/questions.json"
+        NetworkManager.shared.fetchQuestions(from: url) { result in
+            DispatchQueue.main.async {
+                self.tableView.refreshControl?.endRefreshing()
+                switch result {
+                case .success(let data):
+                    var newTopics: [QuizTopic] = []
+                    var newQuestions: [QuizQuestion] = []
+
+                    for (index, dict) in data.enumerated() {
+                        guard let title = dict["title"] as? String,
+                              let desc = dict["desc"] as? String,
+                              let questionsData = dict["questions"] as? [[String: Any]] else {
+                            continue
+                        }
+
+                        let topicID = "topic\(index)"
+                        let topic = QuizTopic(id: topicID, title: title, description: desc, imageName: "questionmark.circle")
+                        newTopics.append(topic)
+
+                        for qDict in questionsData {
+                            guard let text = qDict["text"] as? String,
+                                  let answerStr = qDict["answer"] as? String,
+                                  let answers = qDict["answers"] as? [String],
+                                  let correctIndex = Int(answerStr),
+                                  correctIndex >= 0,
+                                  correctIndex < answers.count else {
+                                continue
+                            }
+
+                            let question = QuizQuestion(topicID: topicID, text: text, options: answers, correctIndex: correctIndex)
+                            newQuestions.append(question)
+                        }
+                    }
+                    
+                    QuizDataStore.topics = newTopics
+                    QuizDataStore.questions = newQuestions
+                    self.tableView.reloadData()
+                    
+                    self.tableView.reloadData()
+
+                case .failure(let error):
+                    let alert = UIAlertController(title: "Error", message: error.localizedDescription, preferredStyle: .alert)
+                    alert.addAction(UIAlertAction(title: "OK", style: .default))
+                    self.present(alert, animated: true)
+                }
+            }
+        }
+    }
+    
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        tableView.reloadData()
     }
 
 }

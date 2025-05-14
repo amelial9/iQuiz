@@ -27,6 +27,8 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         window.rootViewController = navVC
         self.window = window
         window.makeKeyAndVisible()
+        
+        NetworkMonitor.shared.startMonitoring()
     }
 
     func sceneDidDisconnect(_ scene: UIScene) {
