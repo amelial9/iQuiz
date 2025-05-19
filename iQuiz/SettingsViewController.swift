@@ -30,7 +30,7 @@ class SettingsViewController: UIViewController {
         instructionsLabel.numberOfLines = 0
 
         urlField.borderStyle = .roundedRect
-        urlField.text = UserDefaults.standard.string(forKey: "dataURL") ?? "https://tednewardsandbox.site44.com/questions.json"
+        urlField.text = UserDefaults.standard.string(forKey: "dataURL")
         urlField.autocapitalizationType = .none
 
         checkButton.setTitle("Check Now", for: .normal)

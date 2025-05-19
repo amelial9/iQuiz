@@ -20,6 +20,10 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         guard let windowScene = (scene as? UIWindowScene) else { return }
         
         
+        UserDefaults.standard.register(defaults: [
+            "dataURL": "https://tednewardsandbox.site44.com/questions.json"
+        ])
+
         let window = UIWindow(windowScene: windowScene)
         let mainVC = ViewController()
         let navVC = UINavigationController(rootViewController: mainVC)
@@ -27,7 +31,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         window.rootViewController = navVC
         self.window = window
         window.makeKeyAndVisible()
-        
+
         NetworkMonitor.shared.startMonitoring()
     }
 

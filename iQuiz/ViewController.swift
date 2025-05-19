@@ -29,9 +29,11 @@ class ViewController: UITableViewController {
     }
 
     @objc func showSettings() {
-        let settingsVC = SettingsViewController()
-        settingsVC.modalPresentationStyle = .formSheet
-        present(settingsVC, animated: true)
+        guard let settingsURL = URL(string: UIApplication.openSettingsURLString),
+              UIApplication.shared.canOpenURL(settingsURL) else {
+            return
+        }
+        UIApplication.shared.open(settingsURL)
     }
 
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
@@ -69,7 +71,7 @@ class ViewController: UITableViewController {
     }
 
     @objc func refreshData() {
-        let url = UserDefaults.standard.string(forKey: "dataURL") ?? "https://tednewardsandbox.site44.com/questions.json"
+        let url = UserDefaults.standard.string(forKey: "dataURL")!
         NetworkManager.shared.fetchQuestions(from: url) { result in
             DispatchQueue.main.async {
                 self.tableView.refreshControl?.endRefreshing()

@@ -6,6 +6,10 @@
 	objectVersion = 77;
 	objects = {
 
+/* Begin PBXBuildFile section */
+		160C1FD72DDB1EC4003BBE0C /* Settings.bundle in Resources */ = {isa = PBXBuildFile; fileRef = 160C1FD62DDB1EC4003BBE0C /* Settings.bundle */; };
+/* End PBXBuildFile section */
+
 /* Begin PBXContainerItemProxy section */
 		165EFDD52DC847B200BDC51D /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
@@ -24,6 +28,7 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		160C1FD62DDB1EC4003BBE0C /* Settings.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; path = Settings.bundle; sourceTree = "<group>"; };
 		165EFDBE2DC847B100BDC51D /* iQuiz.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = iQuiz.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		165EFDD42DC847B200BDC51D /* iQuizTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = iQuizTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		165EFDDE2DC847B200BDC51D /* iQuizUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = iQuizUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -88,6 +93,7 @@
 		165EFDB52DC847B100BDC51D = {
 			isa = PBXGroup;
 			children = (
+				160C1FD62DDB1EC4003BBE0C /* Settings.bundle */,
 				165EFDC02DC847B100BDC51D /* iQuiz */,
 				165EFDD72DC847B200BDC51D /* iQuizTests */,
 				165EFDE12DC847B200BDC51D /* iQuizUITests */,
@@ -225,6 +231,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				160C1FD72DDB1EC4003BBE0C /* Settings.bundle in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
